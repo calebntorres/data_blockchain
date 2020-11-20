@@ -2,8 +2,11 @@ import json
 import requests
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import time
+import datetime
 
-# processes requests of certain types with a hash 
+# processes api requests single blocks, single transcations and blockheights with a hash 
 def request(request_type, parameter):
     
     if request_type == 'single_block':
@@ -27,11 +30,12 @@ def request(request_type, parameter):
         request = requests.get(url)
         data = request.json() 
         
-    if request_type = == 'm_blocks'
+    #if request_type  == 'm_blocks':
+
         
     return data
 
-# returns a dataframe of block metadata
+# returns a dataframe of a single block's metadata
 def blockMetaData(blk_hash):
     
     sb_data = request('single_block', blk_hash)
@@ -45,7 +49,7 @@ def blockMetaData(blk_hash):
     
     return df
 
-# retrurns transaction data for all transactions in a given block
+# retrurns transaction data for all transactions in a given block via dataframe
 def block_transactions(blk_hash):
     sb_data = request('single_block', blk_hash)
     block_items = sb_data.items()
@@ -56,3 +60,36 @@ def block_transactions(blk_hash):
 
     tx_df = pd.DataFrame.from_dict(transactions)
     return tx_df
+
+# returns hash of the latest block on the blockchain
+def latestBlockHash():
+    url = 'https://blockchain.info/latestblock'
+    request = requests.get(url)
+    data = request.json()
+    
+    blk_hash = data['hash']
+    
+    return blk_hash
+
+# returns unix timestamp of current time
+def currentTime():
+    unix_time = int(round(time.time()))*1000
+    
+    return unix_time
+
+# returns unix timestamp of specified time with string format "dd/mm/yyy"
+def getTime(time_string):
+    epoch_time = time.mktime(datetime.datetime.strptime(time_string, "%d/%m/%Y").timetuple())
+    unix_time = epoch_time*1000
+    
+    return unix_time
+
+def getBlocks():
+    time = getCurrentTime
+    
+ # returns json request of latest block in blockchain   
+def getLatestBlock():
+    blk_hash = latestBlockHash()
+    block = request('single_block', blk_hash)
+    
+    return block
